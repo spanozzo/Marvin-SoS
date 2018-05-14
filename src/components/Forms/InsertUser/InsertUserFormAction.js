@@ -33,7 +33,7 @@ export function insertUser(UCInserted, FCInserted, tpInserted) {
       
       // Declaring this for later so we can chain functions on Authentication.
       //var authenticationInstance
-      var universityIstance
+      var universityInstance
 
       // Get current ethereum wallet.
       web3.eth.getCoinbase((error, coinbase) => {
@@ -42,12 +42,17 @@ export function insertUser(UCInserted, FCInserted, tpInserted) {
           console.error(error);
         }
         
-        university.deployed().then(istance => {
-          universityIstance = istance
-          universityIstance.addUser(UCInserted, FCInserted, tpInserted, {from: coinbase}) 
+        university.deployed().then(instance => {
+          universityInstance = instance
+		  universityInstance.addUser(UCInserted, FCInserted, tpInserted, {from: coinbase, value: 100000000000000000}) 
           .then(result => {
-           
-            var yon = result.receipt.status;
+			/* Nel caso si decidesse di non rendere addUser payable, utilizzare questa funzione
+			universityInstance.deposit({gas: 300000, from: coinbase, value: 1000000000000000000})
+			.then((res) => {
+			}).catch((error) => {
+			})
+			*/
+			var yon = result.receipt.status;
             
             console.log(yon);
             

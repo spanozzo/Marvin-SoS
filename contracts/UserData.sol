@@ -9,6 +9,7 @@ contract UserData {
         uint32 badgeNumber;
         uint8 userType;         // 0: admin, 1: teacher, 2: student
         bool isUser;
+        bool etherWithdraw;
     }
     mapping(bytes32 => User) users;
     mapping(address => bytes32) registeredUsers;        // used for user identification with Metamask
@@ -51,21 +52,30 @@ contract UserData {
         return users[registeredUsers[_address]].badgeNumber;
     }
     // save a new users (for university)
-    function setNewUser(bytes32 _fiscalCode, bytes32 _uniCode, uint8 _userType) public onlyLogic { 
+    function setNewUser(bytes32 _fiscalCode, bytes32 _uniCode, uint8 _userType, bool _state) public payable onlyLogic { 
         users[_fiscalCode].uniCode = _uniCode;
         users[_fiscalCode].userType = _userType;
         users[_fiscalCode].isUser = false;
+        users[_fiscalCode].etherWithdraw = _state;
     }
     // register a new user (for users)
     function setRegisteredUser(address _address, bytes32 _fiscalCode) public onlyLogic { 
         registeredUsers[_address] = _fiscalCode;
         users[_fiscalCode].isUser = true;
         users[_fiscalCode].badgeNumber = uint32(userIndex.push(_fiscalCode));
+        setEtherWithdraw(_fiscalCode, false);
     }
     function userExists(address _address) public view returns(bool) {
         return(registeredUsers[_address] != 0);
     }
     function getUniAddress() public view onlyLogic returns(address) {
-        return(uniAddress);
+        return uniAddress ;
+    }
+    function getEtherWithdraw(bytes32 _fiscalCode) public view onlyLogic returns(bool) {
+        return users[_fiscalCode].etherWithdraw;
+    }
+    function setEtherWithdraw(bytes32 _fiscalCode, bool _state) public onlyLogic {
+        require(users[_fiscalCode].etherWithdraw != _state);
+        users[_fiscalCode].etherWithdraw = _state;
     }
 }
