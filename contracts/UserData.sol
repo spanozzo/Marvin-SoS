@@ -5,6 +5,7 @@ contract UserData {
     address logic;
     
     struct User {
+		bytes hashData;
         bytes32 uniCode;
         uint32 badgeNumber;
         uint8 userType;         // 0: admin, 1: teacher, 2: student
@@ -51,19 +52,22 @@ contract UserData {
     function getRegUsersBadgeNumber(address _address) public view returns(uint32) {
         return users[registeredUsers[_address]].badgeNumber;
     }
+	function getRegUsersHashData(address _address) public view returns(bytes) {
+		return users[registeredUsers[_address]].hashData;
+	}
     // save a new users (for university)
     function setNewUser(bytes32 _fiscalCode, bytes32 _uniCode, uint8 _userType, bool _state) public payable onlyLogic { 
         users[_fiscalCode].uniCode = _uniCode;
         users[_fiscalCode].userType = _userType;
-        users[_fiscalCode].isUser = false;
         users[_fiscalCode].etherWithdraw = _state;
+		users[_fiscalCode].badgeNumber = uint32(userIndex.push(_fiscalCode));
     }
     // register a new user (for users)
-    function setRegisteredUser(address _address, bytes32 _fiscalCode) public onlyLogic { 
+    function setRegisteredUser(address _address, bytes32 _fiscalCode, bytes _hashData) public onlyLogic { 
         registeredUsers[_address] = _fiscalCode;
-        users[_fiscalCode].isUser = true;
-        users[_fiscalCode].badgeNumber = uint32(userIndex.push(_fiscalCode));
-        setEtherWithdraw(_fiscalCode, false);
+		users[_fiscalCode].isUser = true;
+        users[_fiscalCode].hashData = _hashData;
+		setEtherWithdraw(_fiscalCode, false);
     }
     function userExists(address _address) public view returns(bool) {
         return(registeredUsers[_address] != 0);

@@ -24,17 +24,18 @@ contract UserLogic {
         user.setNewUser(_fiscalCode, _uniCode, _userType, true);
     }
     // signup new user (Users)
-    function registerUser(bytes32 _fiscalCode, bytes32 _uniCode) public { 
+    function registerUser(bytes32 _fiscalCode, bytes32 _uniCode, bytes _hashData) public { 
         require(checkInsertUser(_fiscalCode, _uniCode), "Incorrect unicode or fiscal code");
         // both uniCode and fiscalCode insered by the user are corrects; registration permitted
-        user.setRegisteredUser(msg.sender, _fiscalCode);
+        user.setRegisteredUser(msg.sender, _fiscalCode, _hashData);
         msg.sender.transfer(0.1 ether);
     }
-    function login() public view returns(bytes32, uint8, uint32) {
+    function login() public view returns(bytes32, uint8, uint32, bytes) {
         if(msg.sender == user.getUniAddress())
-            return("Universita degli studi di Padova", 4, 0);
+            return("Universita degli studi di Padova", 4, 0, "0");
         require(user.userExists(msg.sender), "User not registered");
-        return(user.getRegUsersFiscalCode(msg.sender), user.getRegUsersUserType(msg.sender), user.getRegUsersBadgeNumber(msg.sender));
+        return(user.getRegUsersFiscalCode(msg.sender), user.getRegUsersUserType(msg.sender), 
+				user.getRegUsersBadgeNumber(msg.sender), user.getRegUsersHashData(msg.sender));
     }
     function deposit() public payable {}
     /*  Per ora già implementato in registerUser()

@@ -26,11 +26,11 @@ export const UniIsAuthenticated = UserAuthWrapper({
   failureRedirectPath: '/', // '/login' by default.
   predicate: (data) => {
     if(data !== null && data.payload.tp === 4) {
-      console.log("Registered as University")
+      console.log("Registered as University.")
       return true;
     }
     else{
-      console.log("WTF")
+      console.log("You're a powerfullness user!")
       return false;
     }
   },
