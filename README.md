@@ -19,7 +19,7 @@ npm
 
 And to clone the repository hosted at:
 ```
-https://github.com/SOS-SonsOfSwe/Marvin-PoC
+https://github.com/SOS-SonsOfSwe/Marvin-SoC
 ```
 
 If you're using Windows you also have to digit from a shell

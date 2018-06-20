@@ -1,52 +1,39 @@
-pragma solidity 0.4.23;
+pragma solidity ^0.4.2;
 import "./UserData.sol";
+import "./ContractManager.sol";
 
 contract UserLogic {
-    UserData user;
-    
-    constructor() public {
-        user = new UserData(msg.sender);
-        user.setLogicAddress(msg.sender, address(this));
+    address uniAddress;
+    ContractManager manager;
+
+    constructor(address _contractManagerAddress) public {
+        uniAddress = msg.sender;
+        manager = ContractManager(_contractManagerAddress);
     }
-    modifier onlyUniversity() {
-        require(user.onlyUniversity(msg.sender));
-        _;
-    }
-    function checkInsertUser(bytes32 _fiscalCode, bytes32 _uniCode) private view returns(bool) {
-        if((user.getUsersUniCode(_fiscalCode) == _uniCode) && (user.getUsersIsUser(_fiscalCode) == false) && 
-				   (!user.userExists(msg.sender)) && (msg.sender != user.getUniAddress()))
+
+    function checkInsertUser(bytes32 _fiscalCode, bytes10 _uniCode) private view returns(bool) {
+        UserData user = UserData(manager.getUserDataContract());
+        if((user.getUsersUniCode(_fiscalCode) == _uniCode) && (user.getUsersIsUser(_fiscalCode) == false)
+          && (!user.userExists(msg.sender)) && (msg.sender != user.getUniAddress()))
 			return true;
-		return false;
+        return false;
     } 
-    // add a new user (University)
-    function addUser(bytes32 _fiscalCode, bytes32 _uniCode, uint8 _userType) public payable onlyUniversity {  
-        require((user.getUsersUniCode(_fiscalCode) == 0), "Fiscal code already assigned");
-        user.setNewUser(_fiscalCode, _uniCode, _userType, true);
-    }
-    // signup new user (Users)
-    function registerUser(bytes32 _fiscalCode, bytes32 _uniCode, bytes _hashData) public { 
+
+    function signUp(bytes32 _fiscalCode, bytes10 _uniCode, bytes32 _hashData) public { 
+        UserData user = UserData(manager.getUserDataContract());
         require(checkInsertUser(_fiscalCode, _uniCode), "Incorrect unicode or fiscal code");
         // both uniCode and fiscalCode insered by the user are corrects; registration permitted
-        user.setRegisteredUser(msg.sender, _fiscalCode, _hashData);
-        msg.sender.transfer(0.1 ether);
+        user.setAddressMapping(msg.sender, _fiscalCode);
+        user.setIsUser(_fiscalCode, true);
+        user.setHashData(_fiscalCode, _hashData);
     }
-    function login() public view returns(bytes32, uint8, uint32, bytes) {
+
+    function login() public view returns(bytes32, uint8, uint32, bytes32) {
+        UserData user = UserData(manager.getUserDataContract());
         if(msg.sender == user.getUniAddress())
             return("Universita degli studi di Padova", 4, 0, "0");
         require(user.userExists(msg.sender), "User not registered");
         return(user.getRegUsersFiscalCode(msg.sender), user.getRegUsersUserType(msg.sender), 
-				user.getRegUsersBadgeNumber(msg.sender), user.getRegUsersHashData(msg.sender));
-    }
-    function deposit() public payable {}
-    /*  Per ora già implementato in registerUser()
-    function requestInitialEther(bytes32 _fiscalCode, bytes32 _uniCode) private {
-        require((user.getUsersUniCode(_fiscalCode) == _uniCode) && (msg.sender != user.getUniAddress()) && 
-                (user.getEtherWithdraw(_fiscalCode)), "Bad input data or not allowed to withdraw");
-        msg.sender.transfer(0.1 ether);
-        user.setEtherWithdraw(_fiscalCode, false);
-    }
-    */
-    function balance() public view returns(uint256) {
-        return address(this).balance;
+            user.getRegUsersBadgeNumber(msg.sender), user.getRegUsersHashData(msg.sender));
     }
 }
