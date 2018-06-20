@@ -19,7 +19,7 @@ npm
 
 And to clone the repository hosted at:
 ```
-https://github.com/SOS-SonsOfSwe/Marvin-SoC
+https://github.com/SOS-SonsOfSwe/Marvin-SoS
 ```
 
 If you're using Windows you also have to digit from a shell
@@ -28,7 +28,7 @@ npm install --global --production windows-build-tools
 ```
 to install Python and other utilities that are necessary to make the demo works.
 
-Then the `Metamask` plugin for Firefox or Chrome is required.
+Then the `Metamask` plugin for Firefox or Chrome is required: you will need to import an existing account from the mnemonic key provided by Ganache.
 
 ### Installing
 
@@ -57,7 +57,7 @@ We have prepared some scripts to make the project simpler to load:
 
 This will start the local blockchain hosted in `http://localhost:9545` with the mnemonic key offered by Ganache:
 ```
-startBlockchain.ps1
+startBlockchain.bat
 ```
 
 This will compile, migrate and then load the entire project:
