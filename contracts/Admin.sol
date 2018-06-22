@@ -27,8 +27,8 @@ contract Admin {
 
     function addNewYear(bytes4 _year) public onlyAdmin {
         DegreeData degree = DegreeData(manager.getDegreeContract());
-        if(!degree.isYear(_year))
-            degree.addYear(_year);
+        require(!degree.isYear(_year));
+        degree.addYear(_year);
     }
 
     function addNewDegree(bytes10 _degreeUniCode, bytes4 _year, bytes32 _hashData) public onlyAdmin {
@@ -89,8 +89,8 @@ contract Admin {
         CourseData(manager.getCourseContract()).deleteCourse(_courseUnicode);
     }
 
-    function removeDegree(bytes10 _degreeUnicode) public onlyAdmin {
-        DegreeData(manager.getDegreeContract()).deleteDegree(_degreeUnicode);
+    function removeDegree(bytes10 _degreeUnicode, bytes4 _degreeYear) public onlyAdmin {
+        DegreeData(manager.getDegreeContract()).deleteDegree(_degreeUnicode, _degreeYear);
     }
 
     function removeYear(bytes4 _year) public onlyAdmin {

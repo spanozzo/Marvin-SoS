@@ -1,4 +1,4 @@
-# SoS-Marvin
+# PoC-Marvin
 
 Proof of concept of the Marvin project developed by the Sons of Swe team for Red Babel.
 
@@ -19,7 +19,7 @@ npm
 
 And to clone the repository hosted at:
 ```
-https://github.com/SOS-SonsOfSwe/Marvin-SoS
+https://github.com/SOS-SonsOfSwe/Marvin-PoC
 ```
 
 If you're using Windows you also have to digit from a shell
@@ -28,7 +28,7 @@ npm install --global --production windows-build-tools
 ```
 to install Python and other utilities that are necessary to make the demo works.
 
-Then the `Metamask` plugin for Firefox or Chrome is required: you will need to import an existing account from the mnemonic key provided by Ganache.
+Then the `Metamask` plugin for Firefox or Chrome is required.
 
 ### Installing
 
@@ -57,7 +57,7 @@ We have prepared some scripts to make the project simpler to load:
 
 This will start the local blockchain hosted in `http://localhost:9545` with the mnemonic key offered by Ganache:
 ```
-startBlockchain.bat
+startBlockchain.ps1
 ```
 
 This will compile, migrate and then load the entire project:

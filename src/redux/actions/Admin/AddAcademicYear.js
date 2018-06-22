@@ -7,11 +7,7 @@ import {
 import store from '../../../store'
 
 // this are standard dispatches: feel free to use them. The meaning is obvious, those are not taking any parameter.
-import {
-  addingData,
-  errorAddingData,
-  dataAdded
-} from '../StandardDispatches/addingData'
+import { addingData, errorAddingData, dataAdded } from '../StandardDispatches/addingData'
 
 const contract = require('truffle-contract')
 
@@ -23,7 +19,7 @@ export default function addNewAcademicYear(year) {
     .web3.web3Instance
 
   // Double-check web3's status.
-  if (typeof web3 !== 'undefined') {
+  if(typeof web3 !== 'undefined') {
 
     return function (dispatch) {
       // Using truffle-contract we create the authentication object.
@@ -47,7 +43,7 @@ export default function addNewAcademicYear(year) {
       // Get current ethereum wallet.
       web3.eth.getCoinbase((error, coinbase) => {
         // Log errors, if any.
-        if (error) {
+        if(error) {
           console.error(error);
         }
 
@@ -58,22 +54,23 @@ export default function addNewAcademicYear(year) {
             var estimatedGas
             var costOperationWei
             var costOperationEth
-            var costOperationUsd
+            var costOperationEur
 
             adminIstance.addNewYear.estimateGas(year)
               .then(result => {
                 estimatedGas = result
+                console.log('GasPrice before op: ' + gasPrice)
                 costOperationWei = estimatedGas * gasPrice
                 costOperationEth = Units.convert(costOperationWei, 'wei', 'eth')
                 console.log('estimateGas: ' + estimatedGas)
                 console.log('Cost of the operation in Wei: ' + costOperationWei)
                 console.log('Cost of the operation in Ether: ' + costOperationEth)
-                ethPrice('USD')
+                ethPrice('EUR')
                   .then(ethInEur => {
                     ethInEur = parseFloat(ethInEur[0]
                       .slice(5))
-                    costOperationUsd = ethInEur * costOperationEth
-                    console.error('Cost of the operation in USD: ' + costOperationUsd)
+                    costOperationEur = ethInEur * costOperationEth
+                    console.error('Cost of the operation in EUR: ' + costOperationEur)
                   })
 
               })
@@ -84,9 +81,7 @@ export default function addNewAcademicYear(year) {
             year = year.slice(0, 4)
             //be careful!! This number cannot be over 4095 or it starts again from 1.
 
-            adminIstance.addNewYear(year, {
-                from: coinbase
-              })
+            adminIstance.addNewYear(year, { from: coinbase })
               .then(result => {
                 // result.receipt.status ritorna lo stato dell'operazione: 0x01 se successo, 0x00 se fallito
                 // console.log(JSON.stringify(result))

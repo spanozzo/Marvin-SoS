@@ -25,16 +25,20 @@ import AcademicYearsContainer from './containers/Profile/Admin/AcademicYears/Aca
 import DegreeCoursesContainer from './containers/Profile/Admin/DegreeCourses/DegreeCoursesContainer'
 import CoursesContainer from './containers/Profile/Admin/Courses/CoursesContainer'
 import readAdminsContainer from './containers/Profile/Admin/AllUsers/readAdminsContainer'
-import Teachers from './components/Profile/Admin/Teachers/Teachers'
-import Students from './components/Profile/Admin/Students/Students'
+import readTeachersContainer from './containers/Profile/Admin/AllUsers/readTeachersContainer'
+// import Teachers from './components/Profile/Admin/Teachers/Teachers'
+// import Students from './components/Profile/Admin/Students/Students'
+import readStudentsContainer from './containers/Profile/Admin/AllUsers/readStudentsContainer'
 import ExamsTeacherList from './components/Profile/Teacher/ExamsTeacherList'
 import ExamsStudentList from './components/Profile/Student/ExamsStudentList'
 import SchoolRecords from './components/Profile/Student/SchoolRecords'
 import InsertAcademicYearContainer from './containers/Profile/Admin/AcademicYears/InsertAcademicYearContainer'
 import ModifyAcademicYear from './components/Profile/Admin/AcademicYears/ModifyAcademicYear'
-import DeleteAcademicYear from './components/Profile/Admin/AcademicYears/DeleteAcademicYear'
+// import DeleteAcademicYear from './component/Profile/Admin/AcademicYears/DeleteAcademicYear'
+import DeleteAcademicYearContainer from './containers/Profile/Admin/AcademicYears/DeleteAcademicYearContainer'
 import InsertDegreeCourseContainer from './containers/Profile/Admin/DegreeCourses/InsertDegreeCourseContainer'
-import DeleteDegreeCourse from './components/Profile/Admin/DegreeCourses/DeleteDegreeCourse'
+// import DeleteDegreeCourse from './components/Profile/Admin/DegreeCourses/DeleteDegreeCourse'
+import DeleteDegreeCourseContainer from './containers/Profile/Admin/DegreeCourses/DeleteDegreeCourseContainer'
 import ModifyDegreeCourse from './components/Profile/Admin/DegreeCourses/ModifyDegreeCourse';
 import InsertCourseContainer from './containers/Profile/Admin/Courses/InsertCourseContainer'
 import InsertExam from './components/Profile/Admin/Courses/InsertExam'
@@ -80,7 +84,7 @@ ReactDOM.render((
             <IndexRoute component={AdminIsAuthenticated(AcademicYearsContainer)} />
             <Route path="insert-academic-year" component={AdminIsAuthenticated(InsertAcademicYearContainer)} />
             <Route path="modify-academic-year" component={AdminIsAuthenticated(ModifyAcademicYear)} />
-            <Route path="delete-academic-year" component={AdminIsAuthenticated(DeleteAcademicYear)} />
+            <Route path="delete-academic-year" component={AdminIsAuthenticated(DeleteAcademicYearContainer)} />
             <Route path="insert-degree-course" component={AdminIsAuthenticated(InsertDegreeCourseContainer)} />
           </Route>
 
@@ -88,7 +92,7 @@ ReactDOM.render((
             <IndexRoute component={AdminIsAuthenticated(DegreeCoursesContainer)} />
             <Route path="insert-degree-course" component={AdminIsAuthenticated(InsertDegreeCourseContainer)} />
             <Route path="modify-degree-course" component={AdminIsAuthenticated(ModifyDegreeCourse)} />
-            <Route path="delete-degree-course" component={AdminIsAuthenticated(DeleteDegreeCourse)} />
+            <Route path="delete-degree-course" component={AdminIsAuthenticated(DeleteDegreeCourseContainer)} />
             <Route path="insert-course" component={AdminIsAuthenticated(InsertCourseContainer)} />
           </Route>
 
@@ -107,13 +111,13 @@ ReactDOM.render((
           </Route>
 
           <Route path="teachers">
-            <IndexRoute component={AdminIsAuthenticated((Teachers))} />
+            <IndexRoute component={AdminIsAuthenticated((readTeachersContainer))} />
             <Route path="insert-user" component={AdminIsAuthenticated(InsertUser)} />
             <Route path="delete-teacher" component={AdminIsAuthenticated(DeleteTeacher)} />
           </Route>
 
           <Route path="students">
-            <IndexRoute component={AdminIsAuthenticated(Students)} />
+            <IndexRoute component={AdminIsAuthenticated(readStudentsContainer)} />
             <Route path="insert-user" component={AdminIsAuthenticated(InsertUser)} />
             <Route path="delete-student" component={AdminIsAuthenticated(DeleteStudent)} />
           </Route>
