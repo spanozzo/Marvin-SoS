@@ -13,7 +13,7 @@ const OnlyUniSubLinks = VisibleOnlyUni(() => {
 
 const OnlyUniAdminSubLinks = VisibleOnlyUniAdmin(() => {
     return (
-        <div>
+        <div className="external-menu">
             <div className="float-right-links">
                 <ul>
                     <OnlyUniSubLinks />
@@ -32,14 +32,18 @@ const OnlyUniAdminSubLinks = VisibleOnlyUniAdmin(() => {
                         <Link to="/profile/academic-years" className="pure-menu-link">Academic years</Link>
                     </li>
                     <li className="pure-menu-item">
-                        <Link to="/profile/degree-courses" className="pure-menu-link">Degree courses</Link>
+                        <Link to="/profile/degrees" className="pure-menu-link">Degrees</Link>
                     </li>
                     <li className="pure-menu-item">
-                        <Link to="/profile/courses" className="pure-menu-link">Courses</Link>
+                        <Link to="/profile/classes" className="pure-menu-link">Classes</Link>
+                    </li>
+                    <li className="pure-menu-item">
+                        <Link to="/profile/exams" className="pure-menu-link">Exams</Link>
                     </li>
                 </ul>
             </div>
         </div>
+
     )
 })
 
@@ -60,10 +64,13 @@ const OnlyStudentSubLinks = VisibleOnlyStudent(() => {
         <div>
             <ul>
                 <li className="pure-menu-item">
-                    <Link to="/profile/exams-student-list" className="pure-menu-link">Your exams list</Link>
+                    <Link to="/profile/exams-student-list" className="pure-menu-link">Exam session</Link>
                 </li>
                 <li className="pure-menu-item">
-                    <Link to="/profile/school-records" className="pure-menu-link">School records</Link>
+                    <Link to="/profile/marked-exams-student-list" className="pure-menu-link">Booking board</Link>
+                </li>
+                <li className="pure-menu-item">
+                    <Link to="/profile/school-records" className="pure-menu-link">Booklet</Link>
                 </li>
             </ul>
         </div>

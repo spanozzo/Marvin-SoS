@@ -5,11 +5,12 @@ contract StudentData {
     address uniAddress;
     ContractManager manager;
     
-    mapping (address => bytes10) degreeCourseStudents;
+    // Students degree: key = student badgeNumber, value = degree uniCode
+    mapping (uint32 => bytes10) studentsDegree;
     
     /* Student accepted tests result
      * key = student badgeNumber, value = uniCodes of passed exams */
-    mapping(uint32 => bytes10[]) studentExams;
+    mapping(uint32 => bytes10[]) acceptedResults;
 
     /* Student subscribed exams
      * key = student badgeNumber, value = uniCodes of subscribed exams */
@@ -25,35 +26,34 @@ contract StudentData {
         _;
     }
 
-    function getStudentDegreeCourse(address _studentAddress) public view onlyStudentContract returns(bytes10) {
-        return(degreeCourseStudents[_studentAddress]);
+    modifier onlyAdminContract() {
+        require(msg.sender == manager.getAdminContract());
+        _;
+    }
+
+    function getStudentDegree(uint32 _badgeNumber) public view returns(bytes10) {
+        return(studentsDegree[_badgeNumber]);
     }
 
     // return all the accepted student results
-    function getConfirmedExamsPerStudent(uint32 _studentBadgeNumber) public view onlyStudentContract returns(bytes10[]) {
-        return(studentExams[_studentBadgeNumber]);
+    function getAcceptedResults(uint32 _studentBadgeNumber) public view onlyStudentContract returns(bytes10[]) {
+        return(acceptedResults[_studentBadgeNumber]);
     }
 
-    function getSubscribedExams(uint32 _studentBadgeNumber) public view onlyStudentContract returns(bytes10[]) {
+    function getSubscribedExams(uint32 _studentBadgeNumber) public view returns(bytes10[]) {
         return(subscribedExams[_studentBadgeNumber]);
     }
 
-    // return the number of accepted student results
-    function getExamsPerStudentNumber(uint32 _studentBadgeNumber) public view onlyStudentContract returns(uint) {
-        return(studentExams[_studentBadgeNumber].length);
-    }
-
-    function addAcceptedResult(bytes10 _examUniCode, uint32 _studentBadgeNumber) public onlyStudentContract {
-        studentExams[_studentBadgeNumber].push(_examUniCode);
+    function addAcceptedResult(bytes10 _classUniCode, uint32 _studentBadgeNumber) public onlyStudentContract {
+        acceptedResults[_studentBadgeNumber].push(_classUniCode);
     }
 
     function addSubscribedExam(bytes10 _examUniCode, uint32 _studentBadgeNumber) public onlyStudentContract {
         subscribedExams[_studentBadgeNumber].push(_examUniCode);
     }
 
-    // Admin o Student?
-    function setStudentDegree(address _studentAddress, bytes10 _degreeUniCode) public {
-        require(degreeCourseStudents[_studentAddress] == 0);
-        degreeCourseStudents[_studentAddress] = _degreeUniCode;
+    function setStudentDegree(uint32 _badgeNumber, bytes10 _degreeUniCode) public onlyAdminContract {
+        require(studentsDegree[_badgeNumber] == 0);
+        studentsDegree[_badgeNumber] = _degreeUniCode;
     }
 }

@@ -1,20 +1,75 @@
-/*!
-Pure v0.6.2
-Copyright 2013 Yahoo!
-Licensed under the BSD License.
-https://github.com/yahoo/pure/blob/master/LICENSE.md
-*/
-/*!
-normalize.css v^3.0 | MIT License | git.io/normalize
-Copyright (c) Nicolas Gallagher and Jonathan Neal
-*/
-/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css ------COMMENTO NON MIO------*/
+//import book from '../../../public/media/1.jpg'
 
-// .title {
-//   text-transform: uppercase;
-//   font-size: 2.6em;
-//   text-decoration: none;
-// }
+.profileImage {
+  height: 17em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.603), 0 6px 20px 0 rgba(0, 0, 0, 0.596);
+}
+
+.img-div {
+  text-align: center;
+}
+
+.costs-table { 
+  margin: auto; 
+} 
+ 
+.costs-table .title-column { 
+  padding: 0.5em 1em; 
+} 
+ 
+.costs-table td:first-child { 
+  text-align: left; 
+  padding-left: 0.5em; 
+} 
+ 
+.costs-table td:nth-child(2), .costs-table td:nth-child(4), .costs-table td:nth-child(6) { 
+  border-right: 0.01em solid rgba(51, 51, 51, 0.555); 
+} 
+ 
+.costs-table td:nth-child(3), .costs-table td:nth-child(4), .costs-table td:nth-child(7), .costs-table td:nth-child(8) { 
+  background-color: rgba(0, 0, 0, 0.041); 
+} 
+
+
+.div-buttons {
+  margin-top: 0.5em;
+}
+
+.exam-span {
+  font-size: 0.8em;
+  color: rgba(75, 72, 72, 0.685);
+}
+
+.prof-list{
+  text-align: center;
+}
+
+.select-class {
+  width: 12em;
+}
+
+.delete-but {
+  padding-left: 20%;
+}
+
+.s_records {
+  text-align: center !important;
+}
+
+.delete-fieldset p {
+  text-align: inherit !important;
+}
+
+.point-button {
+  height: 1.3em;
+  width: 1.3em;
+  border-radius: 9px;
+  pointer-events: none;
+}
+
+.float-left-links ul {
+  padding-left: 0.6em;
+}
 
 .fill_it_button input {
   margin-left: 16%;
@@ -25,12 +80,9 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
   color: #333;
 }
 
-.title_div {
-  padding: 1.2em 2em 3em 1.5em;
-}
-
 .top-navbar {
   height: 6em;
+  padding-top: 1em;
 }
 
 .top_message {
@@ -58,11 +110,16 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
 }
 
 .delete-form {
-  margin-left: 8% !important;
+  
 }
 
 .delete-fieldset {
-  padding-left: 1% !important;
+  margin: auto;
+  width: 20% !important;
+}
+
+.delete-fieldset p {
+  width: 100% !important;
 }
 
 fieldset input {
@@ -111,14 +168,78 @@ tr:nth-child(even) {
   text-decoration: none;
 }
 
-.delete-link a {
-  color: #9C0015;
+.button_cancel a {
+  padding-left: 0.6em;
+}
+
+.button_cancel a {
+  color: #fff;
   text-decoration: none;
+  padding-right: 0.6em;
+}
+
+.button_cancel {
+  border: 0.01em solid #516274;
+  border-radius: 4px;
+  background-color: #516274;
+  padding: 0.3em 0.4em;
+  color: #fff;
+}
+
+.delete-link a {
+  color: #fff;
+  text-decoration: none;
+  padding-right: 0.6em;
+}
+
+.delete-link{
+  border: 0.01em solid #9C0015;
+  border-radius: 4px;
+  background-color: #9C0015;
+  padding: 0.3em 0em;
+  padding-right: 0.4em;
+  color: #fff;
+
+}
+
+.input-stud {
+  margin-top: 0.7em;
+}
+
+.div-buttons input, .input-stud {
+  border: 0.01em solid #333;
+  border-radius: 4px;
+  background-color: #333;
+  padding: 0.3em 0.6em;
+  color: #fff;
+}
+
+.div-buttons input a {
+  color: #fff;
+  text-decoration: none;
+  padding-right: 0.6em;
+}
+
+.X-button {
+  margin-right: 0.6em;
+  padding-right: 0.7em;
+  border: 0.01em solid #9C0015;
+  border-top-left-radius: 4px;
+  background-color: rgba(0,0,0,0.5);
+  left: 0;
+  padding-top: 0.31em;
+  padding-bottom: 0.38em;
+  padding-left: 0.7em;
 }
  
-.student-img { 
-  text-align: center;
-  margin-top: 2.5em;
+.book-img { 
+  margin-top: 6em;
+  background: url("../../.././public/media/1.jpg");
+  width: 100%;
+  height: 20em;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 } 
 
 .pure-button:focus {
@@ -137,7 +258,8 @@ tr:nth-child(even) {
   }
   
   html {
-    font-family: sans-serif;
+    font-family: Georgia, serif;
+    //font-family: sans-serif;
     //-ms-text-size-adjust: 100%;
     //-webkit-text-size-adjust: 100%;
   }
@@ -251,6 +373,11 @@ tr:nth-child(even) {
   
   select {
     text-transform: none;
+    width: 100%;
+    text-align-last: center;
+    text-align: center;
+    -ms-text-align-last: center;
+    -moz-text-align-last: center;
   }
   
   button, html input[type=button] {
@@ -306,7 +433,6 @@ tr:nth-child(even) {
   
   fieldset {
     border: 1px solid silver;
-    margin: 0 2px;
     padding: .35em .625em .75em;
   }
   
@@ -509,7 +635,7 @@ tr:nth-child(even) {
   .pure-button {
     font-family: inherit;
     font-size: 100%;
-    padding: .5em 0;
+    padding: .5em 0.3em;
     color: #444;
     color: rgba(0, 0, 0, 0.8);
     border: 1px solid #999;
@@ -691,9 +817,9 @@ tr:nth-child(even) {
       margin: .5em 0 .2em;
     }
     fieldset {
-      width: 23em;
-      margin: 2em 0em 1.5em 30%;
-      padding: 1em 0% .75em 13%;
+      margin:auto;
+      width: 10%;
+      padding: 1em 5em;
       box-shadow: 2px 0.5px 5px #888888;
       border: none;
 
@@ -718,6 +844,10 @@ tr:nth-child(even) {
     margin-left: 0.7em;
   }
 
+  .pure-u-1-1 p {
+    width: 60%;
+    margin-left: 20%;
+  }
 
   .pure-u-1-1 p, .pure-u-1-1 h1 {
     text-align: center;
@@ -726,16 +856,23 @@ tr:nth-child(even) {
   .pure-form-stacked {
     input {
       &:not([type]), &[type=password], &[type=email], &[type=url], &[type=date], &[type=month], &[type=time], &[type=datetime], &[type=datetime-local], &[type=week], &[type=tel], &[type=color], &[type=file], &[type=number], &[type=search] {
-        margin: .25em 0;
+       margin: .25em 0;
       }
     }
-    label, select, textarea {
+    label, textarea {
       display: block;
       margin: 0.3em 0.4em;
       font-weight: bold;
       font-size: 100%;
-      
     }
+
+    select{
+      margin-bottom: 1em;
+      font-weight: bold;
+
+    }
+
+    margin-bottom: 2em;
   }
   
   .pure-form-aligned {
@@ -760,7 +897,7 @@ tr:nth-child(even) {
         text-align: right;
         display: inline-block;
         vertical-align: middle;
-        width: 10em;
+        //width: 10em;
         margin: 0 1em 0 0;
       }
     }

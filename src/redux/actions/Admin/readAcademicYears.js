@@ -12,6 +12,7 @@ import {
   readingData,
   dataRead,
   dataEmpty,
+  errorReadingData,
   // ipfsReadingData,
   // ipfsDataRead,
   // ipfsErrorReadingData,
@@ -61,11 +62,11 @@ export function readAcademicYearsFromDatabase() {
           .then(function (instance) {
             degreeInstance = instance
 
-            // Attempt to read degree courses per year
+            // Attempt to read degrees per year
             degreeInstance.getAcademicYears({ from: coinbase })
               .then(result => {
-                console.log('Academic Years: ' + JSON.stringify(result))
-                // console.log('result[0] : ' + web3.toHex(result[0]))
+                // console.log('Academic Years: ' + JSON.stringify(result))
+                // // console.log('result[0] : ' + web3.toHex(result[0]))
 
                 // checking if the blockchain is empty for this kind of data.
                 // when the blockchain is empty the first numbers it retrieves are:
@@ -74,7 +75,7 @@ export function readAcademicYearsFromDatabase() {
                 if(result.length === 0) {
                   dispatch(dataEmpty(req))
                 } else {
-                  // console.log('result[0] : ' + web3.toHex(result[0]))
+                  // // console.log('result[0] : ' + web3.toHex(result[0]))
 
                   let i = 0
                   var payload
@@ -108,9 +109,10 @@ export function readAcademicYearsFromDatabase() {
                 }
               })
               .catch(function (result) {
+                dispatch(errorReadingData(req))
                 // If error, go to signup page.
-                console.error('Error while reading infos: ' + result)
-                console.error('Wallet ' + coinbase + ' does not have an account!')
+                // console.error('Error while reading infos: ' + result)
+                // console.error('Wallet ' + coinbase + ' does not have an account!')
                 // dispatch(eraseAdminReducerInfo())
                 // dispatch(eraseIpfsReducerInfo())
                 return browserHistory.push('/profile')

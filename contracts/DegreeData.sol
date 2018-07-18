@@ -1,5 +1,5 @@
 pragma solidity ^0.4.2;
-import "./CourseData.sol";
+import "./ClassData.sol";
 import "./ContractManager.sol";
 
 contract DegreeData {
@@ -11,18 +11,14 @@ contract DegreeData {
         uint16 index;
         bytes10 uniCode;
         bytes32 hashData;
-        // codici univoci delle attività didattiche di un CDL
-        bytes10[] courses;
+        bytes10[] classes;
     }
 
     // all degrees of all years are mapped: key = uniCode, value = Degree
     mapping (bytes10 => Degree) degrees;
 
-    // every course of all years: key = year, value = Degrees uniCodes of all the degrees for that year
+    // every class of all years: key = year, value = Degrees uniCodes of all the degrees for that year
     mapping (bytes4 => bytes10[]) yearDegrees;
-
-    // student's degree: key = student address, value = Degree uniCode
-    mapping (address => bytes10) degreeCourseStudents;
 
     // unicodes of all degrees of all years
     bytes10[] uniCodes;
@@ -61,18 +57,9 @@ contract DegreeData {
         return(academicYears);
     }
 
-    function getAllIdentifiers() public view returns(bytes10[]) {
-        return uniCodes;
-    }
-
-    // return all the degrees unicodes of the year
-    function getYearDegrees(bytes4 _year) public view returns(bytes10[]) {
-        return(yearDegrees[_year]);
-    }
-
     // return all the degrees unicodes and their IPFS hash of to the year
     function getYearDegreesData(bytes4 _year) public view returns(bytes32[], bytes10[]) {
-        bytes10[] memory degreesForYear = getYearDegrees(_year);
+        bytes10[] memory degreesForYear = yearDegrees[_year];
         bytes32[] memory degreesHashCodes = new bytes32[](degreesForYear.length);
         for(uint i = 0; i < degreesForYear.length; ++i) {
             degreesHashCodes[i] = degrees[degreesForYear[i]].hashData;
@@ -80,29 +67,26 @@ contract DegreeData {
         return(degreesHashCodes, degreesForYear);
     }
 
-    // return all the courses unicodes of the degree
-    function getCourses(bytes10 _degreeUniCode) public view returns(bytes10[]) {
-        return(degrees[_degreeUniCode].courses);
+    // return all the classes unicodes of the degree
+    function getClasses(bytes10 _degreeUniCode) public view returns(bytes10[]) {
+        return(degrees[_degreeUniCode].classes);
     }
 
-    // return all the courses unicodes and their IPFS hash of the degree
-    function getCoursesData(bytes10 _degreeUniCode) public view returns(bytes32[], bytes10[]) {
-        bytes10[] memory coursesForDegree = getCourses(_degreeUniCode);
-        bytes32[] memory coursesHashCodes = new bytes32[](coursesForDegree.length);
-        for(uint i = 0; i < coursesForDegree.length; ++i) {
-            coursesHashCodes[i] = CourseData(manager.getCourseContract()).getHashData(coursesForDegree[i]);
+    // return all the classes unicodes and their IPFS hash of the degree
+    function getClassesData(bytes10 _degreeUniCode) public view returns(bytes32[], uint32[], bytes10[]) {
+        bytes10[] memory classesForDegree = getClasses(_degreeUniCode);
+        bytes32[] memory classesHashCodes = new bytes32[](classesForDegree.length);
+        uint32[] memory classesTeacher = new uint32[](classesForDegree.length);
+        for(uint i = 0; i < classesForDegree.length; ++i) {
+            classesHashCodes[i] = ClassData(manager.getClassContract()).getHashData(classesForDegree[i]);
+            classesTeacher[i] = ClassData(manager.getClassContract()).getClassTeacher(classesForDegree[i]);
         }
-        return(coursesHashCodes, coursesForDegree);
+        return(classesHashCodes, classesTeacher, classesForDegree);
     }
 
     function setHashData(bytes10 _degreeUniCode, bytes32 _degreeHashData) public onlyAdminContract {
         degrees[_degreeUniCode].hashData = _degreeHashData;
     }
-
-    // ?? Admin o Student
-    function setDegree(address _studentAddress, bytes10 _degree) public {
-        degreeCourseStudents[_studentAddress] = _degree;
-    }  
 
     function addYear(bytes4 _year) public onlyAdminContract {
         academicYears.push(_year);
@@ -115,65 +99,39 @@ contract DegreeData {
         degrees[_degreeUniCode].index = uint16(uniCodes.push(_degreeUniCode) - 1);
     }
 
-    // add a new course into degree
-    function addCourse(bytes10 _degreeUniCode, bytes10 _courseUniCode) public onlyAdminContract {
-        degrees[_degreeUniCode].courses.push(_courseUniCode);
+    // add a new class into degree
+    function addNewClass(bytes10 _degreeUniCode, bytes10 _classUniCode) public onlyAdminContract returns(uint16){
+        return(uint16(degrees[_degreeUniCode].classes.push(_classUniCode) - 1));
     }
-
-/*
-    function getYearDegreeIndex(bytes10 _degreeUniCode, bytes4 _degreeYear) public view onlyAdminContract returns(uint) {
-        bytes10[] memory dYear = yearDegrees[_degreeYear];
-        for(uint i = 0; i < dYear.length; ++i) {
-            if(dYear[i] == _degreeUniCode) {
-                return i;
-            }  
-        }
-    }
-
-    function deleteDegree(bytes10 _degreeUniCode, bytes4 _degreeYear, uint _index) public onlyAdminContract {
-        uint16 dIndex = degrees[_degreeUniCode].index;
-        uniCodes[dIndex] = uniCodes[uniCodes.length-1];
-        degrees[uniCodes[dIndex]].index = dIndex;
-        uniCodes.length--;
-        
-        yearDegrees[_degreeYear][_index] = yearDegrees[_degreeYear][yearDegrees[_degreeYear].length-1];
-        yearDegrees[_degreeYear].length--;
-        delete degrees[_degreeUniCode];
-    }
-    */
 
     function deleteDegree(bytes10 _degreeUniCode, bytes4 _degreeYear) public onlyAdminContract {
+        require((degrees[_degreeUniCode].classes).length == 0);
         uint16 dIndex = degrees[_degreeUniCode].index;
         uint8 dYearIndex = degrees[_degreeUniCode].yearIndex;
         bytes10[] memory dYear = yearDegrees[_degreeYear];
         uniCodes[dIndex] = uniCodes[uniCodes.length-1];
         degrees[uniCodes[dIndex]].index = dIndex;
         uniCodes.length--;
-        
         yearDegrees[_degreeYear][dYearIndex] = yearDegrees[_degreeYear][dYear.length-1];
         degrees[yearDegrees[_degreeYear][dYearIndex]].yearIndex = dYearIndex;
         yearDegrees[_degreeYear].length--;
-
-        // delete degrees[_degreeUniCode];
+        // Needed for the insert of new degrees with the same degreeUniCode as a deleted degree
+        delete degrees[_degreeUniCode];
     }
 
-/*
-    function getYearIndex(bytes4 _year) public view onlyAdminContract returns(uint) {
-        for(uint i = 0; i < academicYears.length; ++i) {
-            if(academicYears[i] == _year) {
-                return i;
-            }
-        }
+    function deleteClass(bytes10 _degreeUniCode, uint16 _classIndex) public onlyAdminContract {
+        ClassData class = ClassData(manager.getClassContract());
+        bytes10 oldClassUnicode = degrees[_degreeUniCode].classes[_classIndex];
+        require((class.getClassExams(oldClassUnicode)).length == 0);
+        uint16 lastClassIndex = uint16((degrees[_degreeUniCode].classes).length - 1);
+        degrees[_degreeUniCode].classes[_classIndex] = degrees[_degreeUniCode].classes[lastClassIndex];
+        bytes10 newClassUnicode = degrees[_degreeUniCode].classes[_classIndex];
+        class.setIndex(newClassUnicode, _classIndex);
+        (degrees[_degreeUniCode].classes).length--;
     }
-
-    function deleteYear(uint _index) public onlyAdminContract {
-        academicYears[_index] = academicYears[academicYears.length-1];
-        academicYears.length--;
-    }
-
-    */
 
     function deleteYear(bytes4 _year) public onlyAdminContract {
+        require(yearDegrees[_year].length == 0);
         bool found = false;
         for(uint i = 0; i < academicYears.length && !found; ++i) {
             if(academicYears[i] == _year) {

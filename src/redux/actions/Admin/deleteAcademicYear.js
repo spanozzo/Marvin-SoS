@@ -68,30 +68,30 @@ export function deleteAcademicYearFromDatabase(year) {
         // degree.deployed()
         //   .then(instance => {
         //     degreeInstance = instance
-        //     console.log('Year we are looking for: ' + yearToDelete)
+        //     // console.log('Year we are looking for: ' + yearToDelete)
         //     degreeInstance.getYearIndex(yearToDelete, { from: coinbase })
         //       .then(result => {
         //         return console.error('index: ' + result)
         //         // index = web3.toDecimal(result)
         //       })
-        //       .catch(err => console.log(err))
+        //       .catch(err => // console.log(err))
         // .then(() => {
 
         admin.deployed()
           .then(function (instance) {
             adminInstance = instance
 
-            // console.log('yearToDelete: ' + yearToDelete)
-            adminInstance.removeYear(yearToDelete, { from: coinbase })
+            // // console.log('yearToDelete: ' + yearToDelete)
+            adminInstance.removeYear(yearToDelete, { gas: '100000', from: coinbase })
               .then(() => {
-                return doAwesomeStuff(dispatch, year) //Repeating because of the asyncronous promises of the functions
+                doAwesomeStuff(dispatch, year)
+                return browserHistory.push('/profile/academic-years') //Repeating because of the asyncronous promises of the functions
               })
               .catch(error => {
                 dispatch(errorDeletingData())
                 // If error, go to signup page.
                 console.error('Error while deleting infos: ' + error)
               })
-              .finally(() => { return browserHistory.push('/profile/academic-years') })
           })
       })
       // })

@@ -1,13 +1,17 @@
 import AdminContract from '../../../../build/contracts/Admin'
-import {
-  browserHistory
-} from 'react-router'
+import { browserHistory } from 'react-router'
 import store from '../../../store'
 // import * as utils from '../../../utils/validations'
 
 import {
-  userCostants
+  adminCostants
 } from '../../reducers/costants'
+
+import {
+  addingData,
+  errorAddingData,
+  dataAdded,
+} from '../StandardDispatches/addingData'
 
 const contract = require('truffle-contract')
 
@@ -15,14 +19,14 @@ const contract = require('truffle-contract')
 //function userLoggedIn(user) 
 function userInserted(YesOrNo) {
   return {
-    type: userCostants.USER_INSERTED,
+    type: adminCostants.USER_INSERTED,
     //payload: user
     payload: YesOrNo
   }
 }
 
-export function insertUser(FCInserted, UCInserted, tpInserted) {
-  console.log('Type inserted: ' + tpInserted)
+export function insertUser(FCInserted, UCInserted, tpInserted, degreeUnicode) {
+  // console.log('Type inserted: ' + tpInserted)
   let web3 = store.getState()
     .web3.web3Instance
 
@@ -46,25 +50,34 @@ export function insertUser(FCInserted, UCInserted, tpInserted) {
 
         admin.deployed()
           .then(instance => {
+            dispatch(addingData())
             adminIstance = instance
-            adminIstance.addUser(FCInserted, UCInserted, tpInserted, {
-                from: coinbase
-              })
+            adminIstance.addUser(FCInserted, UCInserted, tpInserted, degreeUnicode, { from: coinbase })
               .then(result => {
                 // yon.receipt.status ritorna lo stato dell'operazione: 0x01 se successo, 0x00 se fallito
-                var yon = result.receipt.status;
+                let yon = result.receipt.status;
 
-                console.log(yon);
+                // console.log(yon);
 
                 dispatch(userInserted({
                   "YesOrNo": yon
                 }))
-
-                return browserHistory.push('/') //| alert(UCInserted + " inserted as " + utils.userDef(parseInt(tpInserted, 10)))
+                dispatch(dataAdded())
+                // console.log("tpInserted:" + tpInserted)
+                switch(parseInt(tpInserted, 10)) {
+                case 1:
+                  return browserHistory.push('/profile/administrators')
+                case 2:
+                  return browserHistory.push('/profile/teachers')
+                case 3:
+                  return browserHistory.push('/profile/students')
+                default:
+                  return browserHistory.push('/profile')
+                }
               })
 
               .catch(function (result) {
-
+                dispatch(errorAddingData())
               })
           })
       })

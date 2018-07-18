@@ -11,6 +11,13 @@ import {
   userCostants
 } from '../../reducers/costants'
 
+import {
+  ipfsReadingData,
+  ipfsDataRead,
+  ipfsErrorReadingData,
+  ipfsNetworkError
+} from '../StandardDispatches/readingData'
+
 const contract = require('truffle-contract')
 
 // function metamaskIsActive() {
@@ -48,12 +55,18 @@ export function loginUser() {
   var web3 = store.getState()
     .web3.web3Instance
 
+  if(web3 == null) {
+    alert('No metamask/mist detected. \nDownload the right extension to access the Ethereum Network or change browser.')
+    return browserHistory.push('/')
+  }
+
   // check if the user is logged in to metamask
   // the function has to return a function as is invoked by a dispatch
   if(web3.eth.accounts.length === 0) {
     alert("Please login to Metamask before!")
     return function (dispatch) {
-      browserHistory.push('/')
+      window.location.reload()
+      return browserHistory.push('/')
     }
   } else return login(web3)
 }
@@ -65,7 +78,8 @@ function login(web3, dispatch) {
     email: '',
     FC: '',
     tp: '',
-    badgeNumber: ''
+    badgeNumber: '',
+    image: ''
   }
 
   // Double-check web3's status.
@@ -103,27 +117,42 @@ function login(web3, dispatch) {
                 payload.tp = web3.toDecimal(result[1]);
                 payload.badgeNumber = web3.toDecimal(result[2]);
 
-                console.log("IPFS of the user:", ipfsPromise.getIpfsHashFromBytes32(result[3]))
+                // console.log("IPFS of the user:", ipfsPromise.getIpfsHashFromBytes32(result[3]))
                 if(payload.tp !== 4) {
+                  dispatch(userLoggingIn())
+                  dispatch(ipfsReadingData())
                   var ipfs = new ipfsPromise()
-                  // console.log('Waiting for the data from IPFS...')
+                  // // console.log('Waiting for the data from IPFS...')
                   ipfs.getJSON(ipfsPromise.getIpfsHashFromBytes32(result[3]))
                     .then(jFile => {
                       //dispatch(userLoggingIn()) //dispatch waiting for data
-                      // console.log("jFile:", jFile)
+                      // // console.log("jFile:", jFile)
                       payload.name = jFile.name;
                       payload.surname = jFile.surname;
                       payload.email = jFile.email;
+                      payload.image = jFile.uploadedFile;
+                      // console.log(jFile.uploadedFile)
+                      // ipfs.getFile(jFile.uploadedFile)
+                      //   .then(image => {
+                      //     // console.log(image)
+                      //     payload.image = image
+                      //     return payload
+                      //   })
+                      //   .then((payload) => {
+
+                      dispatch(ipfsDataRead())
+                      // console.log(payload)
                       return doAwesomeStuff(dispatch, payload)
+                      // })
                     })
                     .catch(err => {
                       // HERE I CATCH THE ERROR OF THE getJSON METHOD. JUST FOR TESTING
-                      // console.log('Fail:', err)
-
-                      dispatch(userLoggingIn())
-
+                      // // console.log('Fail:', err)
+                      dispatch(ipfsErrorReadingData())
+                      dispatch(ipfsNetworkError())
+                      // alert('IPFS is not able to load your data. Pay attention to your network')
                     })
-                  dispatch(userLoggingIn())
+
                 } else
                   return doAwesomeStuff(dispatch, payload) //Repeating because of the asyncronous promises of the functions
               })

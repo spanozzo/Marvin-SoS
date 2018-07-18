@@ -1,4 +1,4 @@
-import { adminCostants } from '../costants'
+import { adminCostants, userCostants } from '../costants'
 
 const initialState = {
   payload: null,
@@ -18,9 +18,9 @@ const academicYearsReducer = (state = initialState, action) => {
 
       // in this case the admin has dispatched an action of reading in "readAdminData.js"
       // admin is retrieving data from server, so the boolean variables work as expected
-    case adminCostants.FETCHING_DATA || adminCostants.DELETING:
+    case userCostants.FETCHING_DATA || userCostants.DELETING:
       {
-        console.log('adminReducer: reading or deleting data from database')
+        // console.log('adminReducer: reading or deleting data from database')
         return {
           ...state,
           loading: true,
@@ -33,16 +33,16 @@ const academicYearsReducer = (state = initialState, action) => {
       }
 
       // server finished to give data successfully, so he can unlock resources
-    case adminCostants.FETCH_DATA_SUCCESS:
+    case userCostants.FETCH_DATA_SUCCESS:
       {
-        console.log('adminReducer: successfully fetched academic years data')
+        // console.log('adminReducer: successfully fetched academic years data')
         // checking if somebody changed page during loading data, so the state.data is not overwritten by asynchronous returns
         // if(state.loading === false) return state
         return {
           ...state,
           payload: action.payload.load,
-          // degreeCourses: state.degreeCourses,
-          // courses: state.courses,
+          // degrees: state.degrees,
+          // classes: state.classes,
           success: true,
           empty: false,
           // we want to set this false so we can tell the components that they don't need to retrieve informations from blockchain but that from the store is enough
@@ -50,21 +50,21 @@ const academicYearsReducer = (state = initialState, action) => {
           loading: false
         }
       }
-    case adminCostants.DELETED_DATA:
+    case userCostants.DELETED_DATA:
       {
-        console.log('adminReducer: successfully deleted academic year')
+        // console.log('adminReducer: successfully deleted academic year')
         var newPayload = state.payload
-        console.log('Trying to delete: ' + action.payload.load)
+        // console.log('Trying to delete: ' + action.payload.load)
         var indexToDelete = newPayload.findIndex(index => {
-          console.log('index.year: ' + index.year)
-          console.log('index.year === action.payload.load: ' + (index.year === action.payload.load))
+          // console.log('index.year: ' + index.year)
+          // console.log('index.year === action.payload.load: ' + (index.year === action.payload.load))
           return index.year === action.payload.load
         })
-        console.log('indexToDelete: ' + indexToDelete)
+        // console.log('indexToDelete: ' + indexToDelete)
         var part1 = newPayload.slice(0, indexToDelete)
         var part2 = newPayload.slice(indexToDelete + 1, -1)
         var tot = [...part1, ...part2]
-        console.log('Resulting academic year payload: ' + JSON.stringify(tot))
+        // console.log('Resulting academic year payload: ' + JSON.stringify(tot))
         return {
           ...state,
           payload: tot,
@@ -77,7 +77,7 @@ const academicYearsReducer = (state = initialState, action) => {
       }
 
       // there were some errors, so we can manage them
-    case adminCostants.FETCH_DATA_ERROR || adminCostants.ERROR_DELETING_DATA:
+    case userCostants.FETCH_DATA_ERROR || userCostants.ERROR_DELETING_DATA:
       {
         return {
           ...state,
@@ -85,7 +85,7 @@ const academicYearsReducer = (state = initialState, action) => {
           success: false
         }
       }
-    case adminCostants.FETCH_DATA_EMPTY:
+    case userCostants.FETCH_DATA_EMPTY:
       {
         return {
           ...state,

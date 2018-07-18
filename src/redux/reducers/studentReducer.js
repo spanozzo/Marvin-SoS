@@ -1,12 +1,15 @@
-import { studentCostants } from './costants'
-// import * as studentData from '../../utils/adminData'
+import { combineReducers } from 'redux'
+import { routerReducer } from 'react-router-redux'
 
-const initialState = {
+import examsReducer from './StudentReducer/examsReducer'
+import subscribedMarkedReducer from './StudentReducer/subscribedMarkedReducer'
+import bookletReducer from './StudentReducer/bookletReducer'
 
-}
-
-const studentReducer = (state = initialState, action) => {
-
-}
+const studentReducer = combineReducers({
+  routing: routerReducer,
+  exams: examsReducer,
+  subscribedExams: subscribedMarkedReducer,
+  bookletExams: bookletReducer
+})
 
 export default studentReducer

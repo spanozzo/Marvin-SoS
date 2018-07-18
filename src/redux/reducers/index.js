@@ -3,18 +3,20 @@ import { routerReducer } from 'react-router-redux'
 import userReducer from './userReducer'
 import adminReducer from './adminReducer'
 import ipfsReducer from './ipfsReducer'
-// import studentReducer from './studentReducer'
-// import profReducer from './profReducer'
+import studentReducer from './studentReducer'
+import teacherReducer from './teacherReducer'
+import costReducer from './costReducer'
 import web3Reducer from './web3Reducer'
 
 const reducer = combineReducers({
   routing: routerReducer,
   user: userReducer,
   admin: adminReducer,
-  // prof: profReducer,
-  // student: studentReducer,
+  teacher: teacherReducer,
+  student: studentReducer,
   web3: web3Reducer,
-  ipfs: ipfsReducer
+  ipfs: ipfsReducer,
+  cost: costReducer
 })
 
 export default reducer

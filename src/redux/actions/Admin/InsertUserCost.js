@@ -5,7 +5,7 @@ import store from '../../../store'
 
 const contract = require('truffle-contract')
 
-export default function addDegreeCourseCost(FC, UC, tp) {
+export default function addDegreeCost(FC, UC, tp) {
   let web3 = store.getState()
     .web3.web3Instance
 
@@ -43,14 +43,14 @@ export default function addDegreeCourseCost(FC, UC, tp) {
               estimatedGas = result
               costOperationWei = estimatedGas * gasPrice
               costOperationEth = Units.convert(costOperationWei, 'wei', 'eth')
-              // console.log('estimateGas: ' + estimatedGas)
-              // console.log('Cost of the operation in Wei: ' + costOperationWei)
-              // console.log('Cost of the operation in Ether: ' + costOperationEth)
+              // // console.log('estimateGas: ' + estimatedGas)
+              // // console.log('Cost of the operation in Wei: ' + costOperationWei)
+              // // console.log('Cost of the operation in Ether: ' + costOperationEth)
               ethPrice('USD')
                 .then(ethInUsd => {
                   ethInUsd = parseFloat(ethInUsd[0].slice(5))
                   costOperationUsd = ethInUsd * costOperationEth
-                  console.error('Cost of the operation in USD: ' + costOperationUsd)
+                  // console.error('Cost of the operation in USD: ' + costOperationUsd)
                   return costOperationUsd
                 })
 

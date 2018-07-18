@@ -8,19 +8,16 @@ const Row = ({ year }) => (
         <td>Academic year {year}</td>
         <td>
             <Link to={{
-                pathname: "/profile/degree-courses/insert-degree-course",
+                pathname: "/profile/degrees/insert-degree",
                 state: { year: year }
-            }} > Insert degree course</Link>
+            }} > Insert degree</Link>
         </td>
         <td>
-            <button className="modify-link">
-                <Link to="/profile/academic-years/modify-academic-year">Modify</Link>
-            </button>
             <button className="delete-link">
                 <Link to={{
                     pathname: "/profile/academic-years/delete-academic-year",
                     state: { year: year }
-                }}>Delete</Link>
+                }}><span className="X-button">X</span>Delete</Link>
             </button>
         </td>
 
@@ -49,23 +46,25 @@ class AcademicYears extends React.Component {
                     <main className='container'>
                         <div className="pure-u-1-1">
                             <h1>Academic years</h1>
-                            <p className="text-center">Here there is the list of the academic years.</p>
+                            <p className="text-center">List of the academic years.</p>
                             <div className="div_insert_button">
-                                <button className="insert-button pure-button pure-button-primary">
-                                    <Link className="pure-link" to="/profile/academic-years/insert-academic-year"> Insert academic year </Link>
+                                <Link className="pure-link" to="/profile/academic-years/insert-academic-year">
+                                    <button className="insert-button pure-button pure-button-primary">
+                                        Insert academic year
                                 </button>
+                                </Link>
                             </div>
                             {this.props.empty === false && this.props.success === true &&
                                 <table className="table table-striped">
                                     <thead>
                                         <tr>
                                             <th className="title-column">Year</th>
-                                            <th className="title-column">Degree course</th>
+                                            <th className="title-column">Degree</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {/* {console.log('this.props.data.load: ' + this.props.data)} */}
-                                        {/* {console.log('component: AcademicYear. Data: this.props.data: ' + JSON.stringify(this.props.data))} */}
+                                        {/* {// console.log('this.props.data.load: ' + this.props.data)} */}
+                                        {/* {// console.log('component: AcademicYear. Data: this.props.data: ' + JSON.stringify(this.props.data))} */}
                                         {this.props.academicYears.map((rowData, index) => <Row key={index} {...rowData} />)}
                                     </tbody>
                                 </table>

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router'
 
 import { OnlyAuthLinks, OnlyGuestLinks, OnlyUniAdminLinks } from './NavButtons'
-import logo from '../../../public/media/Marvin_title.png'
+//import logo from '../../../public/media/Marvin_title.png'
 // import '../node_modules/bootstrap/scss/bootstrap.scss'
 
 // Styles
@@ -10,6 +10,7 @@ import logo from '../../../public/media/Marvin_title.png'
 import '../stylesheets/open-sans.scss'*/
 import './pure-min.scss'
 import './App.scss'
+import './Mobile.scss'
 
 class App extends Component {
   render() {
@@ -17,19 +18,22 @@ class App extends Component {
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal top-navbar">
           <ul className="pure-menu-list navbar-right">
+            {/* <Link to="/costs" className="pure-menu-link">Costs</Link> */}
             <OnlyGuestLinks />
             <OnlyAuthLinks />
             <OnlyUniAdminLinks />
           </ul>
-          <div className="title_div">
-            <Link to="/">
-              <img className="logo" src={logo} alt="My logo" />
-            </Link>
-          </div>
+
+          <Link to="/">
+            <div className="logo_div"></div>
+            {/* <img className="logo" src={logo} alt="My logo" /> */}
+          </Link>
+
           {/* <Link to="/" className="title">Marvin</Link> */}
         </nav>
 
         {this.props.children}
+        <div className="footer">© 2018 Marvin - MIT License - Made with ❤ by Sons of SWE</div>
       </div>
     );
   }

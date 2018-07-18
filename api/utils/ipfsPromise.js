@@ -1,34 +1,38 @@
-import IPFS from 'ipfs-mini'
+// import IPFS from 'ipfs-mini'
+import "regenerator-runtime/runtime"; // needed for async calls
 import bs58 from 'bs58'
+import ipfsapi from 'ipfs-api'
+import promiseTimeout from './timeout'
+import { browserHistory } from 'react-router'
+
+var instance = null
 
 export default class ipfsPromise {
   constructor() {
-    // Using Infura node
-    /*
-     * this.callback = new IPFS({
-     * host: "ipfs.infura.io",
-     * port: '5001',
-     * protocol: 'https'
-     * })
-     */
+    if(!instance) {
+      instance = this
+      // Using Infura node
 
-    /* 
-     * Using local node - if you choose this you have to run "ipfs daemon" before. 
-     * You also need to loosen your IPFS node's CORS restrictions, changing config file in your .ipfs directory
-     * and setting "Access-Control-Allow-Origin": ["*"] both in "Gateway" and "API"):
-     *
-     * this.callback = new IPFS({
-     * host: "127.0.0.1",
-     * port: '5001',
-     * protocol: 'http'
-     * })
-     */
+      // this.ipfs = new ipfsapi({
+      //   host: "ipfs.infura.io",
+      //   port: '5001',
+      //   protocol: 'https'
+      // })
 
-    // Using AWS Server Instance
-    this.callback = new IPFS({
-      host: "54.93.231.212", // IPv4 Public IP of the AWS Server Instance
-      port: '5001'
-    })
+      /* 
+       * Using local node - if you choose this you have to run "ipfs daemon" before. 
+       * You also need to loosen your IPFS node's CORS restrictions, changing config file in your .ipfs directory
+       * and setting "Access-Control-Allow-Origin": ["*"] both in "Gateway" and "API"):
+       */
+
+      // Using AWS Server Instance
+      this.ipfsapi = new ipfsapi({
+        host: "54.93.231.212", // IPv4 Public IP of the AWS Server Instance
+        port: '5001'
+      })
+    } else {
+      this.ipfsapi = instance.ipfsapi
+    }
   }
 
   // Return bytes32 hex string from base58 encoded ipfs hash,
@@ -57,26 +61,142 @@ export default class ipfsPromise {
     return hashStr
   }
 
-  pushJSON(jsonPARAM) {
-    var ipfs = this.callback
-    return new Promise(function (resolve, reject) {
-      ipfs.addJSON(jsonPARAM, function (err, data) {
-        // setTimeout(() => {
-        //   return reject("no ipfs network allowed")
-        // }, 5)
-        if(err !== null) return reject(err);
-        resolve(data);
-      })
+  // pushJSON(jsonPARAM) {
+  //   var ipfs = this.ipfs
+  //   return new Promise(function (resolve, reject) {
+  //     ipfs.addJSON(jsonPARAM, function (err, data) {
+  //       // setTimeout(() => {
+  //       //   return reject("no ipfs network allowed")
+  //       // }, 5)
+  //       if(err !== null) return reject(err);
+  //       return resolve(data);
+  //     })
+  //   })
+  // }
+
+  async pushJSON(jsonPARAM) {
+    return new Promise(async (resolve, reject) => {
+      if(jsonPARAM == null || jsonPARAM === "") return resolve(null)
+      var buf = Buffer.from(JSON.stringify(jsonPARAM));
+      try {
+        var hash = await promiseTimeout(30000, this.ipfsapi.add(buf))
+        if(hash) return resolve(hash[0].hash)
+      } catch(error) {
+        console.error(error)
+        alert('It seems that IPFS has some problems... \nCheck your network firewall or try again later.')
+        // store.dispatch(browserHistory.push('/'))
+        browserHistory.push('/')
+        return reject(error)
+      }
     })
   }
 
-  getJSON(hashIpfsPARAM) {
-    var ipfs = this.callback
-    return new Promise(function (resolve, reject) {
-      ipfs.catJSON(hashIpfsPARAM, function (err, data) {
-        if(err !== null) return reject(err);
-        resolve(data);
-      })
+  // getJSON(hashIpfsPARAM) {
+  //   var ipfs = this.ipfs
+  //   return new Promise(function (resolve, reject) {
+  //     ipfs.catJSON(hashIpfsPARAM, function (err, data) {
+  //       if(err !== null) return reject(err);
+  //       return resolve(data);
+  //     })
+  //   })
+  // }
+
+  async getJSON(hashIpfsPARAM) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        var buffer = await promiseTimeout(20000, this.ipfsapi.cat(hashIpfsPARAM))
+        var json = JSON.parse(buffer.toString())
+        if(json !== null)
+          return resolve(json)
+      } catch(error) {
+        console.error(error)
+        alert('It seems that IPFS has some problems... \nCheck your network firewall or try again later.')
+        browserHistory.push('/')
+        return reject(error)
+      }
     })
   }
+
+  //   return this.ipfsapi.cat(hashIpfsPARAM)
+  //     .then(buffer => {
+  //       return JSON.parse(buffer.toString());
+  //     })
+  //     .catch(err => console.error(err))
+  // }
+
+  // pushFile(files) {
+  //   var ipfs = this.ipfs
+  //   const reader = new FileReader();
+  //   reader.readAsArrayBuffer(files)
+  //   reader.onloadend = function () {
+  //     const buf = buffer.Buffer(reader.result) // Convert data into buffer
+  //     ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
+  //       if(err) {
+  //         console.error(err)
+  //         return
+  //       }
+  //     })
+  //   }
+  // }
+
+  // async getFile(hash) {
+  //   return new Promise(async (resolve, reject) => {
+  //     try {
+
+  //       var buffer = await promiseTimeout(40000, this.ipfsapi.cat(hash))
+  //       if(buffer) { // check better!
+  //         // .then((buffer) => {
+  //         var blob = new Blob([buffer], { type: "image/jpg" })
+  //         // console.log(blob)
+  //         var urlCreator = window.URL || window.webkitURL;
+  //         var imageUrl = urlCreator.createObjectURL(blob);
+  //         var img = new Image();
+  //         // console.log(img)
+  //         // console.log(imageUrl)
+  //         img.src = imageUrl;
+  //         // console.log(JSON.stringify(img))
+  //         return resolve(img)
+  //       }
+  //     } catch(error) {
+  //       console.error(error)
+  //       alert('It seems that IPFS has some problems... \nCheck your network firewall or try again later.')
+  //       browserHistory.push('/')
+  //       return reject(error)
+  //     }
+  //     // })
+  //   })
+  // }
+
+  pushFile(buffer) {
+    return new Promise(async (resolve, reject) => {
+      if(buffer === "" || buffer == null) return resolve(null)
+      try {
+        var response = await promiseTimeout(60000, this.ipfsapi.add(buffer))
+        if(response) // // console.log(response[0].hash)
+          return resolve(response[0].hash)
+      } catch(error) {
+        console.error(error)
+        alert('It seems that IPFS has some problems... \nCheck your network firewall or try again later.')
+        // store.dispatch(browserHistory.push('/'))
+        browserHistory.push('/')
+        return reject(error)
+      }
+    })
+  }
+
+  // // console.log(reader)
+  // const reader = new FileReader();
+  // reader.readAsArrayBuffer(files); // Read Provided File
+  // reader.onloadend = function () {
+  // // console.log(reader)
+
+  // let url = `https://ipfs.io/ipfs/${result[0].hash}`
+  // // console.log(`Url --> ${url}`)
+  // document.getElementById("url").innerHTML= url
+  // document.getElementById("url").href= url
+  // document.getElementById("output").src = url
+  // })
+  // })
+  // const photo = document.getElementById("photo");
+  // }
 }
