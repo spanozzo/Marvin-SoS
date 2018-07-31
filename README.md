@@ -1,6 +1,6 @@
-# PoC-Marvin
+# Marvin
 
-Proof of concept of the Marvin project developed by the Sons of Swe team for Red Babel.
+Marvin project developed by the Sons of SWE team for Red Babel. It's a PoC for a university website based on Ethereum blockchain (Rinkeby test network) and IPFS for multimedia and other data.
 
 ## Getting Started
 
